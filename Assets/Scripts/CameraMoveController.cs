@@ -1,11 +1,28 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraMoveController : MonoBehaviour
 {
-    Vector2 offset = new Vector2(0, 0);
-    float smooth = 1.0f;
+    private Vector2 offset = new Vector2(0, 0);
+    private float smooth = 1.0f;
+    private float zoomTarget;
+    private float zoomFactor = 8f;
+    private float zoomLerpSpeed = 5;
+    private Camera mainCamera;
+
+    void Start()
+    {
+        mainCamera = Camera.main;
+        zoomTarget = mainCamera.orthographicSize;
+    }
+
+
+    void Update()
+    {
+        MouseZoom();
+    }
 
     void FixedUpdate()
     {
@@ -15,6 +32,12 @@ public class CameraMoveController : MonoBehaviour
     }
 
 
+    public void MouseZoom()
+    {
+        float scrollData;
+        scrollData = Input.GetAxis("Mouse ScrollWheel");
 
-
+        zoomTarget -= scrollData * zoomFactor;
+        mainCamera.orthographicSize = Mathf.Lerp(mainCamera.orthographicSize, zoomTarget, Time.deltaTime * zoomLerpSpeed);
+    }
 }
